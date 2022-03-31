@@ -13,4 +13,4 @@ $ rosrun turtle_mover turtle_mover.py # in another terminal tab
 ```
 ### OR
 Edit the `turtle_mover.launch` file by
-- uncomment the `python node` on line `5` and comment the `C++ node`
+- uncomment the `python node` on line `6` and comment the `C++ node`
