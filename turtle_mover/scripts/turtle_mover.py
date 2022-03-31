@@ -3,25 +3,29 @@ import rospy
 from geometry_msgs.msg import Twist
 from turtlesim.msg import Pose 
 
-
+# publisher
 pub = rospy.Publisher('turtle1/cmd_vel', Twist, queue_size=10)
 
 # robot starting point
 initial_x = -1 
 initial_y = -1
-print_pos = False
+print_pos = False # print result
+
 
 def move(distance:float, speed: float):
     vel_msg = Twist()
     vel_msg.linear.x = speed
     current_x = 0
     start_time = rospy.Time.now().to_sec()
+    rate = rospy.Rate(30)
+
     while current_x < distance:
         pub.publish(vel_msg) #publish message
         current_time = rospy.Time.now().to_sec()
         current_x = (current_time - start_time) * speed
         rospy.loginfo("Current x position: %f", current_x)
-    
+        rate.sleep()
+
     # stop the robot
     vel_msg.linear.x = 0
     pub.publish(vel_msg)

@@ -18,20 +18,15 @@ void move(double speed, double distance);
 // method to rotate the robot by 45 degs
 void rotate(double speed, double deg);
 
-void callback(turtlesim::PosePtr const &pose) {
-    if (initial_x == -1) {
-        initial_x = pose->x;
-        initial_y = pose->y;
-    }
-    if (printPos) {
-        ROS_INFO("The initial position is x: %f, y: %f and the final position is x: %f, y: %f",
-        initial_x,
-        initial_y,
-        pose->x,
-        pose->y);
-        printPos = false;
-    }
-}
+/**
+ * @brief Subscriber callback for /turtle1/pose
+ * 
+ * @param pose Turtlesim pose object
+ */
+void callback(turtlesim::PosePtr const &pose);
+
+
+
 
 int main(int argc, char **argv)
 {
@@ -107,4 +102,20 @@ void rotate(double speed, double angle) {
     // stop
     vel_msg.angular.z = 0;
     pub.publish(vel_msg);
+}
+
+
+void callback(turtlesim::PosePtr const &pose) {
+    if (initial_x == -1) {
+        initial_x = pose->x;
+        initial_y = pose->y;
+    }
+    if (printPos) {
+        ROS_INFO("The initial position is x: %f, y: %f and the final position is x: %f, y: %f",
+        initial_x,
+        initial_y,
+        pose->x,
+        pose->y);
+        printPos = false;
+    }
 }
