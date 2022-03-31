@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<launch>
+
+    <node name="turtlesim" pkg="turtlesim" type="turtlesim_node" output="screen"/>
+    <node name="turtle_mover" pkg="turtle_mover" type="turtle_mover" output="screen"/>
+    <!-- <node name="turtle_mover_py" pkg="turtle_mover" type="turtle_mover.py" output="screen"/> -->
+    
+</launch>
