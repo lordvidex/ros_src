@@ -11,67 +11,40 @@ Walker::Walker()
     // publisher
     pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
     // subscribe to laser scans
-    scanSub = nh.subscribe("scan", 1, &Walker::scanCallback, this);
-    // subscribe to odom scans
-    odomSub = nh.subscribe("odom", 1, &Walker::odomCallback, this);
-
-    // add to directions and set current direction
-    directions.push_back(Direction(0));
-    directions.push_back(Direction(45));
-    directions.push_back(Direction(90));
-    directions.push_back(Direction(135));
-    directions.push_back(Direction(180));
-    directions.push_back(Direction(225));
-    directions.push_back(Direction(270));
-    directions.push_back(Direction(315));
-    currentDirection = directions[4];
+    scanSub = nh.subscribe("scan", 10, &Walker::scanCallback, this);
 }
 
-void Walker::scanCallback(const sensor_msgs::LaserScanConstPtr &msg)
+void Walker::scanCallback(const sensor_msgs::LaserScanConstPtr &scan)
 {
-    if (!isMoving)
-        return;
-    if (isTurning)
-        return;
-    if (currentDirection.hasObstacleInFront(msg))
-    {
-        ROS_INFO("STOPEEEEEDDDDDD");
-        move(0);
-        isMoving = false;
-        while (startAngle == -1)
-        { // wait for odom subscriber to set the angle
-            // then we can find the best angle to turn to
-            ros::spinOnce();
+    bool isObstacleInFront = false;
+
+    // Find the closest range between the defined minimum and maximum angles
+    int minIndex = ceil((MIN_SCAN_ANGLE - scan->angle_min) / scan->angle_increment);
+    int maxIndex = floor((MAX_SCAN_ANGLE - scan->angle_min) / scan->angle_increment);
+
+    for (int currIndex = minIndex + 1; currIndex <= maxIndex; currIndex++) {
+        if (scan->ranges[currIndex] < MIN_DIST_FROM_OBSTACLE) {
+            isObstacleInFront = true;
+            break;
         }
-        ROS_INFO("Gotteen a start angle");
-        Direction &maxDirection = currentDirection;
-        double maxAverage = -1;
-        for (Direction &dir : directions)
-        {
-            if (dir != currentDirection && !dir.hasObstacleInFront(msg))
-            {
-                ROS_INFO("The direction %f does not have an obstacle", dir.center);
-                double temp = dir.averageRangeInDirection(msg);
-                if (temp > maxAverage)
-                {
-                    maxDirection = dir;
-                    maxAverage = temp;
-                }
-            }
-        }
-        ROS_INFO("The best direction is %f", Direction::rad2Deg(maxDirection.center));
-        isTurning = true;
-        ROS_INFO("this should turn");
-        rotateTo(maxDirection);
     }
-    else
-    {
-        move();
+    geometry_msgs::Twist msg;
+    if (isObstacleInFront) {
+        ROS_INFO("Turn away!");
+         // The default constructor will set all commands to 0
+        msg.angular.z = ROTATE_SPEED;
+        msg.linear.x = 0;
+    } else {
+        ROS_INFO("Keep moving");
+        msg.linear.x = -1 * FORWARD_SPEED;
+        msg.angular.z = 0;
     }
+    pub.publish(msg); 
 }
 void Walker::move(double x)
 {
     geometry_msgs::Twist msg;
+    msg.angular.z = 0;
     msg.linear.x = -1 * x;
     pub.publish(msg);
 }
@@ -140,13 +113,7 @@ void Walker::odomCallback(const nav_msgs::OdometryConstPtr &msg)
 
 void Walker::startMoving()
 {
-    ros::Rate rate(30);
-
-    while (ros::ok())
-    {
-        ros::spinOnce();
-        rate.sleep();
-    }
+    ros::spin();
 }
 
 bool Direction::hasObstacleInFront(const sensor_msgs::LaserScanConstPtr &msg)
