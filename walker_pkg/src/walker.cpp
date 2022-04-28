@@ -6,10 +6,11 @@ Walker::Walker()
 {
     isMoving = true;
     isTurning = false;
+    turnMultiplier = -2;
     startAngle = -1;
     currentAngle = -1;
     // publisher
-    pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 1);
+    pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 10);
     // subscribe to laser scans
     scanSub = nh.subscribe("scan", 10, &Walker::scanCallback, this);
 }
@@ -22,24 +23,41 @@ void Walker::scanCallback(const sensor_msgs::LaserScanConstPtr &scan)
     int minIndex = ceil((MIN_SCAN_ANGLE - scan->angle_min) / scan->angle_increment);
     int maxIndex = floor((MAX_SCAN_ANGLE - scan->angle_min) / scan->angle_increment);
 
-    for (int currIndex = minIndex + 1; currIndex <= maxIndex; currIndex++) {
-        if (scan->ranges[currIndex] < MIN_DIST_FROM_OBSTACLE) {
+    for (int currIndex = minIndex + 1; currIndex <= maxIndex; currIndex++)
+    {
+        if (scan->ranges[currIndex] < MIN_DIST_FROM_OBSTACLE)
+        {
             isObstacleInFront = true;
             break;
         }
     }
     geometry_msgs::Twist msg;
-    if (isObstacleInFront) {
-        ROS_INFO("Turn away!");
-         // The default constructor will set all commands to 0
-        msg.angular.z = ROTATE_SPEED;
+    if (isObstacleInFront)
+    {
+        if (!isTurning)
+        {
+            // choose to turn left or right
+            Direction right(180 - SCAN_RANGE, SCAN_RANGE / 2);
+            Direction left(180 + SCAN_RANGE, SCAN_RANGE / 2);
+
+            // turn left if the average range is greater in left
+            turnMultiplier = left.averageRangeInDirection(scan) > right.averageRangeInDirection(scan) ? 1 : -1;
+            isTurning = true;
+            // The default constructor will set all commands to 0
+        }
+        ROS_INFO("Turn %s!", turnMultiplier == 1 ? "Left" : "Right");
+        msg.angular.z = ROTATE_SPEED * turnMultiplier;
         msg.linear.x = 0;
-    } else {
+        pub.publish(msg);
+    }
+    else
+    {
+        isTurning = false;
         ROS_INFO("Keep moving");
         msg.linear.x = -1 * FORWARD_SPEED;
         msg.angular.z = 0;
+        pub.publish(msg);
     }
-    pub.publish(msg); 
 }
 void Walker::move(double x)
 {
@@ -60,7 +78,8 @@ void Walker::rotateTo(Direction &direction)
     twist.angular.z = ROTATE_SPEED;
     bool endCondition = false;
     double finishAngle = startAngle + (direction.center - currentDirection.center);
-    if (finishAngle < 0) {
+    if (finishAngle < 0)
+    {
         finishAngle = finishAngle + 2 * M_PI;
     }
     while (!Direction::near(finishAngle, currentAngle))

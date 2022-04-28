@@ -63,8 +63,9 @@ public:
     static constexpr double FORWARD_SPEED = 0.4;
     static constexpr double ROTATE_SPEED = 10 * M_PI / 180;
     static constexpr float MIN_DIST_FROM_OBSTACLE = 0.6f;
-    static constexpr double MIN_SCAN_ANGLE = M_PI+(-22.5/180*M_PI);
-    static constexpr double MAX_SCAN_ANGLE = M_PI+(+22.5/180*M_PI);
+    static constexpr float SCAN_RANGE = 45;
+    static constexpr double MIN_SCAN_ANGLE = M_PI+(-(SCAN_RANGE/2)/180*M_PI);
+    static constexpr double MAX_SCAN_ANGLE = M_PI+((SCAN_RANGE/2)/180*M_PI);
     void startMoving();
     Walker();
 
@@ -81,6 +82,7 @@ private:
     /* control parameters */
     bool isMoving;
     bool isTurning;
+    int turnMultiplier;
     double startAngle; // angle from which turning is started
     double currentAngle;
     std::vector<Direction> directions;
