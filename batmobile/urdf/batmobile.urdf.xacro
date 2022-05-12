@@ -17,7 +17,6 @@
             <xacro:insert_block name="material" />
         </visual>
     </xacro:macro>
-    <xacro:property name="default3d" value="0 0 0"/>
     <xacro:macro name="joint" params="name type parent child axisxyz:=${default3d} originxyz:=${default3d} originrpy:=${default3d}">
         <joint name="${name}" type="${type}">
             <parent link="${parent}" />
@@ -34,7 +33,7 @@
                 </geometry>
                 <material name="blue" />
             </xacro:collision_visual>
-            <xacro:inertial_cylinder mass="2.5" length="0.05" radius="0.1" />
+            <xacro:inertial mass="2.5" ixx="${(1/12) * 2.5 * (3*.1*.1 + 0.05*0.05)}" iyy="${(1/12) * 2.5 * (3*.1*.1 + 0.05*0.05)}" izz="${(1/2) * 2.5 * (.1*.1)}"/>
         </link>
         <xacro:gazebo_material color="Gazebo/Blue" reference="${prefix}_wheel_link" />
         <xacro:joint name="${prefix}_wheel_joint" type="continuous" parent="root_link" child="${prefix}_wheel_link" axisxyz="0 0 ${reflect}" originxyz="-0.05 ${reflect*0.125} 0" originrpy="${-1 * reflect * pi/2} 0 0"/> 
@@ -48,14 +47,12 @@
             </geometry>
         </visual>
         <collision>
-            <origin xyz="0.0 0.0 0.0" rpy="0. -0.1 0.0" />
+            <origin xyz="0.0 0.0 0.02" rpy="0. -0.15 0.0" />
             <geometry>
                 <box size=".41 .16 .1" />
             </geometry>
         </collision>
-        <xacro:inertial_box mass="10" x=".41" y=".16" z=".1">
-            <origin xyz="0.0 0.0 0.0" rpy="0. -0.05 0.0" />        
-    </xacro:inertial_box>
+        <xacro:inertial mass="10" originrpy="0. -0.05 0.0" ixx="${(1/12) * 10 * (.16*.16+.1*.1)}" iyy="${(1/12) * 10 * (.41*.41+.1*.1)}" izz="${(1/12) * 10 * (.41*.41+.16*.16)}"/>       
     </link>
     <xacro:wheel_link prefix="left" />
     <xacro:wheel_link prefix="right" reflect="-1" />
@@ -66,7 +63,7 @@
             </geometry>
             <material name="red" />
         </xacro:collision_visual>
-        <xacro:inertial_sphere mass="0.1" radius="0.06"/>
+        <xacro:inertial mass="0.1" ixx="${(2/5) * 0.1*0.06*0.06}" iyy="${(2/5)*0.1*0.06*0.06}" izz="${(2/5)*0.1*0.06*0.06}"/>
     </link>
     <xacro:gazebo_material color="Gazebo/Blue" reference="caster_wheel_link" />
     <xacro:joint name="base_joint" originxyz="0 0 .1" child="root_link" parent="base_link" type="fixed"/>
