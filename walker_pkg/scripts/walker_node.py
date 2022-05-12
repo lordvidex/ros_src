@@ -18,12 +18,26 @@ class Walker:
         self._is_moving = True
         self.is_turning = False
         self.pub = rospy.Publisher('cmd_vel',Twist,queue_size=1)
-        self.sub = rospy.Subscriber('scan',LaserScan, self.scan_callback, queue_size=10)
+        self.sub = rospy.Subscriber('scan',LaserScan, self.scan_callback, queue_size=1)
     
     def start_walking(self):
         while not rospy.is_shutdown():
             rospy.spin()
-
+    def turn(self, angle:float):
+        twist = Twist()
+        turn_time = angle / self.ROTATE_SPEED
+        start_time = rospy.get_time()
+        end_time = start_time + turn_time
+        while rospy.get_time() < end_time:
+            twist.angular.z = self.ROTATE_SPEED
+            self.pub.publish(twist)
+        twist.angular.z = 0
+        twist.linear.x = 0
+        self.pub.publish(twist)
+    
+    # def analyze_scan(scan: LaserScan):
+    #     for range in scan.ranges:
+            
     def scan_callback(self, scan:LaserScan):
         blocked = False
         minIndex = math.ceil((self.MIN_SCAN_ANGLE - scan.angle_min) / scan.angle_increment)
@@ -36,18 +50,17 @@ class Walker:
                 break
             currIndex = currIndex + 1
 
-        twist = Twist()
         if blocked:
             rospy.loginfo("Turn away robot!!")
-            twist.angular.z = self.ROTATE_SPEED
-            twist.linear.x = 0
+            self.turn()
         else:
             rospy.loginfo("Keep moving robot!!")
+            twist = Twist()
             twist.angular.z = 0
             twist.linear.x = -1 * self.FORWARD_SPEED
+            # publish message
+            self.pub.publish(twist)
         
-        # publish message
-        self.pub.publish(twist)
 
 if __name__ == '__main__':
     try:

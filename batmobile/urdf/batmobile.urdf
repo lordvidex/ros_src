@@ -127,6 +127,19 @@
       <inertia ixx="0.000144" ixy="0.0" ixz="0.0" iyy="0.000144" iyz="0.0" izz="0.000144"/>
     </inertial>
   </link>
+  <link name="caster_wheel_holder">
+    <collision>
+      <geometry>
+        <cylinder length="0.01" radius="0.001"/>
+      </geometry>
+    </collision>
+    <visual>
+      <geometry>
+        <cylinder length="0.01" radius="0.001"/>
+      </geometry>
+      <material name="green"/>
+    </visual>
+  </link>
   <gazebo reference="caster_wheel_link">
     <material>Gazebo/Blue</material>
   </gazebo>
@@ -136,10 +149,16 @@
     <axis xyz="0 0 0"/>
     <origin rpy="0 0 0" xyz="0 0 .1"/>
   </joint>
-  <joint name="caster_wheel_joint" type="fixed">
+  <joint name="caster_wheel_holder_joint" type="continuous">
+    <parent link="root_link"/>
+    <child link="caster_wheel_holder"/>
+    <axis xyz="0 0 1"/>
+    <origin rpy="0 0 0" xyz="0.17 0.0 -0.03"/>
+  </joint>
+  <joint name="caster_wheel_joint" type="continuous">
     <parent link="root_link"/>
     <child link="caster_wheel_link"/>
-    <axis xyz="0 0 0"/>
+    <axis xyz="0 1 0"/>
     <origin rpy="0 0 0" xyz="0.17 0.0 -0.03"/>
   </joint>
   <link name="imu_link">

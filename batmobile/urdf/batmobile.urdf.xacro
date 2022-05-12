@@ -1,9 +1,7 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="batmobile">
     <xacro:macro name="material_color" params="name rgba">
-        <material name="${name}">
-            <color rgba="${rgba}" />
-        </material>
+        <material name="${name}"><color rgba="${rgba}" /></material>
     </xacro:macro>
     <xacro:material_color name="blue" rgba="0.0 0.0 0.8 1.0" />
     <xacro:material_color name="green" rgba="0.0 0.8 0.0 1.0" />
@@ -72,8 +70,7 @@
         <xacro:gazebo_material color="Gazebo/Blue" reference="${prefix}_wheel_link" />
         <xacro:joint name="${prefix}_wheel_joint" type="continuous" parent="root_link" child="${prefix}_wheel_link" axisxyz="0 0 ${reflect}" originxyz="-0.05 ${reflect*0.125} 0" originrpy="${-1 * reflect * pi/2} 0 0" />
     </xacro:macro>
-    <link name="base_link" />
-    <link name="root_link">
+    <link name="base_link" /><link name="root_link">
         <visual>
             <origin xyz="0.0 0.0 0.02" rpy="0. -0.15 0.0" />
             <geometry>
@@ -99,14 +96,22 @@
         </xacro:collision_visual>
         <xacro:inertial mass="0.1" ixx="${(2/5) * 0.1*0.06*0.06}" iyy="${(2/5)*0.1*0.06*0.06}" izz="${(2/5)*0.1*0.06*0.06}" />
     </link>
+    <link name="caster_wheel_holder">
+        <xacro:collision_visual>
+            <geometry>
+                <cylinder length="0.01" radius="0.001" />
+            </geometry>
+            <material name="green"/>
+        </xacro:collision_visual>
+    </link>
     <xacro:gazebo_material color="Gazebo/Blue" reference="caster_wheel_link" />
     <xacro:joint name="base_joint" originxyz="0 0 .1" child="root_link" parent="base_link" type="fixed" />
-    <xacro:joint name="caster_wheel_joint" type="fixed" parent="root_link" child="caster_wheel_link" originxyz="${0.2-0.03} 0.0 -0.03" />
+    <xacro:joint name="caster_wheel_holder_joint" type="continuous" axisxyz="0 0 1" parent="root_link" child="caster_wheel_holder" originxyz="${0.2-0.03} 0.0 -0.03" />
+    <xacro:joint name="caster_wheel_joint" type="continuous" axisxyz="0 1 0" parent="root_link" child="caster_wheel_link" originxyz="${0.2-0.03} 0.0 -0.03" />
     <link name="imu_link">
         <xacro:collision_visual>
             <geometry>
-                <box size="0.03 0.03 0.03" />
-                <origin xyz="0 0 ${sin(0.15)*.4}" />
+                <box size="0.03 0.03 0.03" /><origin xyz="0 0 ${sin(0.15)*.4}" />
             </geometry>
             <material name="green" />
         </xacro:collision_visual>
