@@ -1,0 +1,79 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="batmobile">
+    <xacro:include filename="materials.xacro" />
+    <xacro:include filename="inertial_macros.xacro" />
+    <xacro:include filename="gazebo_control.xacro" />
+    <xacro:property name="chassis_length" value=".41" />
+    <xacro:property name="chassis_width" value=".16" />
+    <xacro:property name="chassis_height" value=".1" />
+    <xacro:macro name="gazebo_material" params="color reference">
+        <gazebo reference="${reference}">
+            <material>${color}</material>
+        </gazebo>
+    </xacro:macro>
+    <xacro:macro name="collision_visual" params="*geometry *material">
+        <collision>
+            <xacro:insert_block name="geometry" />
+        </collision>
+        <visual>
+            <xacro:insert_block name="geometry" />
+            <xacro:insert_block name="material" />
+        </visual>
+    </xacro:macro>
+    <xacro:property name="default3d" value="0 0 0"/>
+    <xacro:macro name="joint" params="name type parent child axisxyz:=${default3d} originxyz:=${default3d} originrpy:=${default3d}">
+        <joint name="${name}" type="${type}">
+            <parent link="${parent}" />
+            <child link="${child}" />
+            <axis xyz="${axisxyz}" />
+            <origin xyz="${originxyz}" rpy="${originrpy}" />
+        </joint>
+    </xacro:macro>
+    <xacro:macro name="wheel_link" params="prefix reflect:=1">
+        <link name="${prefix}_wheel_link">
+            <xacro:collision_visual>
+                <geometry>
+                    <cylinder radius="0.1" length="0.05" />
+                </geometry>
+                <material name="blue" />
+            </xacro:collision_visual>
+            <xacro:inertial_cylinder mass="2.5" length="0.05" radius="0.1" />
+        </link>
+        <xacro:gazebo_material color="Gazebo/Blue" reference="${prefix}_wheel_link" />
+        <xacro:joint name="${prefix}_wheel_joint" type="continuous" parent="root_link" child="${prefix}_wheel_link" axisxyz="0 0 ${reflect}" originxyz="-0.05 ${reflect*0.125} 0" originrpy="${-1 * reflect * pi/2} 0 0"/> 
+    </xacro:macro>
+
+    <link name="world_link" />
+    <link name="root_link">
+        <visual>
+            <origin xyz="0.0 0.0 0.02" rpy="0. -0.1 0.0" />
+            <geometry>
+                <mesh filename="package://batmobile/meshes/chassis.dae" scale="0.9 0.5 0.5" />
+                <!-- <box size="${chassis_length} ${chassis_width} ${chassis_height}" /> -->
+            </geometry>
+        </visual>
+        <collision>
+            <origin xyz="0.0 0.0 0.0" rpy="0. -0.1 0.0" />
+            <geometry>
+                <box size="${chassis_length} ${chassis_width} ${chassis_height}" />
+            </geometry>
+        </collision>
+        <xacro:inertial_box mass="10" x="${chassis_length}" y="${chassis_width}" z="${chassis_height}">
+            <origin xyz="0.0 0.0 0.0" rpy="0. -0.05 0.0" />        
+    </xacro:inertial_box> <!-- can reduce origin since it's just 1 -->
+    </link>
+    <xacro:wheel_link prefix="left" />
+    <xacro:wheel_link prefix="right" reflect="-1" />
+    <link name="caster_wheel_link">
+        <xacro:collision_visual>
+            <geometry>
+                <sphere radius="0.06" />
+            </geometry>
+            <material name="red" />
+        </xacro:collision_visual>
+        <xacro:inertial_sphere mass="0.1" radius="0.06"/>
+    </link>
+    <xacro:gazebo_material color="Gazebo/Blue" reference="caster_wheel_link" />
+    <xacro:joint name="base_joint" originxyz="0 0 .1" child="root_link" parent="world_link" type="fixed"/>
+    <xacro:joint name="caster_wheel_joint" type="fixed" parent="root_link" child="caster_wheel_link" originxyz="${0.2-0.03} 0.0 -0.03" />
+</robot>

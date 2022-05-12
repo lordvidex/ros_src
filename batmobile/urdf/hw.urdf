@@ -1,0 +1,152 @@
+<?xml version="1.0"?>
+<robot name="visual">
+
+  <material name="black">
+    <color rgba="0 0 0 1"/>
+  </material>
+  <material name="white">
+    <color rgba="1 1 1 1"/>
+  </material>
+  
+  <link name="base_link">
+    <visual>
+    <origin rpy="0 0 3.2" xyz="0 0 0"/>
+      <geometry>
+        <mesh filename="package://my_urdf/meshes/chassis.dae"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://my_urdf/meshes/chassis.dae"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="10"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="1.0" ixy="0.0" ixz="0.0" iyy="1.0" iyz="0.0" izz="1.0"/>
+    </inertial>
+  </link>
+  
+  <link name="back_left_wheel">
+	<visual>
+      <origin rpy="1.57079632679 0  0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.07" radius="0.14"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="1.57079632679 0 0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.07" radius="0.14"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.5"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.00108333333333" ixy="0" ixz="0" iyy="0.00108333333333" iyz="0" izz="0.002"/>
+    </inertial>
+  </link>
+  <gazebo reference="back_left_wheel">
+    <material>Gazebo/Black</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+
+  <joint name="left_front_back_joint" type="continuous">
+    <axis rpy="0 0 0" xyz="0 1 0"/>
+    <parent link="base_link"/>
+    <child link="back_left_wheel"/>
+    <origin xyz="-0.1 -0.2 -0.1"/>
+  </joint>
+  
+  <link name="back_right_wheel">
+	<visual>
+      <origin rpy="1.57079632679 0  0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.07" radius="0.14"/>
+      </geometry>
+      <material name="black"/>
+    </visual>
+    <collision>
+      <origin rpy="1.57079632679 0 0 " xyz="0 0 0"/>
+      <geometry>
+        <cylinder length="0.07" radius="0.14"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.5"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.00108333333333" ixy="0" ixz="0" iyy="0.00108333333333" iyz="0" izz="0.002"/>
+    </inertial>
+  </link>
+  <gazebo reference="back_right_wheel">
+    <material>Gazebo/Black</material>
+    <turnGravityOff>false</turnGravityOff>
+  </gazebo>
+  
+  <joint name="right_front_back_joint" type="continuous">
+    <axis rpy="0 0 0" xyz="0 1 0"/>
+    <parent link="base_link"/>
+    <child link="back_right_wheel"/>
+    <origin xyz="-0.1 0.2 -0.1"/>
+  </joint>
+  
+  <link name="center_wheel_base">
+	<visual>
+      <origin rpy="0.0 0 0 " xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.0001"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0 0 " xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.0001"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.5"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.00108333333333" ixy="0" ixz="0" iyy="0.00108333333333" iyz="0" izz="0.002"/>
+    </inertial>
+  </link>
+  
+  
+  <link name="center_wheel_x">
+	<visual>
+      <origin rpy="0.0 0 0 " xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.08"/>
+      </geometry>
+      <material name="white"/>
+    </visual>
+    <collision>
+      <origin rpy="0.0 0 0 " xyz="0 0 0"/>
+      <geometry>
+        <sphere radius="0.08"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.5"/>
+      <origin xyz="0 0 0"/>
+      <inertia ixx="0.00108333333333" ixy="0" ixz="0" iyy="0.00108333333333" iyz="0" izz="0.002"/>
+    </inertial>
+  </link>
+  
+  <joint name="center_wheel_joint_lr" type="continuous">
+    <axis rpy="0 1.57079632679 0" xyz="0 0 1"/>
+    <parent link="base_link"/>
+    <child link="center_wheel_base"/>
+    <origin xyz="0.17 0 -0.16"/>
+  </joint>
+  
+  <joint name="center_wheel_joint_fb" type="continuous">
+    <axis rpy="0 0 0" xyz="0 1 0"/>
+    <parent link="center_wheel_base"/>
+    <child link="center_wheel_x"/>
+    <origin xyz="0.0 0 0"/>
+  </joint>
+
+
+</robot>

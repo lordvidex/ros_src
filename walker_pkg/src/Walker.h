@@ -61,7 +61,7 @@ class Walker
 public:
     // Tunable parameters
     static constexpr double FORWARD_SPEED = 0.4;
-    static constexpr double ROTATE_SPEED = 10 * M_PI / 180;
+    static constexpr double ROTATE_SPEED = 20 * M_PI / 180;
     static constexpr float MIN_DIST_FROM_OBSTACLE = 0.6f;
     static constexpr float SCAN_RANGE = 45;
     static constexpr double MIN_SCAN_ANGLE = M_PI+(-(SCAN_RANGE/2)/180*M_PI);
