@@ -9,7 +9,6 @@ Panels:
         - /RobotModel1
         - /TF1
         - /Imu1
-        - /Imu2
       Splitter Ratio: 0.5
     Tree Height: 370
   - Class: rviz/Selection
@@ -147,16 +146,6 @@ Visualization Manager:
       Topic: ""
       Unreliable: false
       Value: true
-    - Alpha: 1
-      Class: rviz_plugin_tutorials/Imu
-      Color: 204; 51; 204
-      Enabled: true
-      History Length: 1
-      Name: Imu
-      Queue Size: 10
-      Topic: /imu_data
-      Unreliable: false
-      Value: true
   Enabled: true
   Global Options:
     Background Color: 48; 48; 48
@@ -185,7 +174,7 @@ Visualization Manager:
   Views:
     Current:
       Class: rviz/Orbit
-      Distance: 8.405769348144531
+      Distance: 2.060093402862549
       Enable Stereo Rendering:
         Stereo Eye Separation: 0.05999999865889549
         Stereo Focal Distance: 1
@@ -201,9 +190,9 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.7397967576980591
+      Pitch: 0.41979700326919556
       Target Frame: <Fixed Frame>
-      Yaw: 3.026780843734741
+      Yaw: 0.46678104996681213
     Saved: ~
 Window Geometry:
   Displays:

@@ -1,8 +1,35 @@
 <?xml version="1.0"?>
 <robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="batmobile">
-    <xacro:include filename="materials.xacro" />
-    <xacro:include filename="gazebo_control.xacro" />
-    <xacro:property name="default3d" value="0 0 0"/>
+    <xacro:macro name="material_color" params="name rgba">
+        <material name="${name}">
+            <color rgba="${rgba}" />
+        </material>
+    </xacro:macro>
+    <xacro:material_color name="blue" rgba="0.0 0.0 0.8 1.0" />
+    <xacro:material_color name="green" rgba="0.0 0.8 0.0 1.0" />
+    <xacro:material_color name="red" rgba="0.8 0.0 0.0 1.0" /> <!--material -->
+    <gazebo>
+        <plugin name="differential_drive_controller" filename="libgazebo_ros_diff_drive.so">
+            <leftJoint>left_wheel_joint</leftJoint>
+            <rightJoint>right_wheel_joint</rightJoint>
+            <wheelSeparation>0.21</wheelSeparation>
+            <wheelDiameter>0.2</wheelDiameter>
+            <wheelAcceleration>10.0</wheelAcceleration>
+            <robotBaseFrame>root_link</robotBaseFrame>
+            <publishWheelTF>true</publishWheelTF>
+        </plugin>
+    </gazebo>
+    <gazebo>
+        <plugin name="imu_plugin" filename="libgazebo_ros_imu.so">
+          <alwaysOn>true</alwaysOn>
+          <bodyName>imu_link</bodyName>
+          <topicName>imu</topicName>
+          <serviceName>imu_service</serviceName>
+          <gaussianNoise>0.0</gaussianNoise>
+          <updateRate>20.0</updateRate>
+        </plugin>
+      </gazebo><!--TODO: <xacro:include filename="gazebo_control.xacro" /> -->
+    <xacro:property name="default3d" value="0 0 0" />
     <xacro:macro name="inertial" params="mass ixx iyy izz originrpy:=${default3d}">
         <inertial>
             <origin rpy="${originrpy}" />
@@ -40,10 +67,10 @@
                 </geometry>
                 <material name="blue" />
             </xacro:collision_visual>
-            <xacro:inertial mass="2.5" ixx="${(1/12) * 2.5 * (3*.1*.1 + 0.05*0.05)}" iyy="${(1/12) * 2.5 * (3*.1*.1 + 0.05*0.05)}" izz="${(1/2) * 2.5 * (.1*.1)}"/>
+            <xacro:inertial mass="2.5" ixx="${(1/12) * 2.5 * (3*.1*.1 + 0.05*0.05)}" iyy="${(1/12) * 2.5 * (3*.1*.1 + 0.05*0.05)}" izz="${(1/2) * 2.5 * (.1*.1)}" />
         </link>
         <xacro:gazebo_material color="Gazebo/Blue" reference="${prefix}_wheel_link" />
-        <xacro:joint name="${prefix}_wheel_joint" type="continuous" parent="root_link" child="${prefix}_wheel_link" axisxyz="0 0 ${reflect}" originxyz="-0.05 ${reflect*0.125} 0" originrpy="${-1 * reflect * pi/2} 0 0"/> 
+        <xacro:joint name="${prefix}_wheel_joint" type="continuous" parent="root_link" child="${prefix}_wheel_link" axisxyz="0 0 ${reflect}" originxyz="-0.05 ${reflect*0.125} 0" originrpy="${-1 * reflect * pi/2} 0 0" />
     </xacro:macro>
     <link name="base_link" />
     <link name="root_link">
@@ -59,7 +86,7 @@
                 <box size=".41 .16 .1" />
             </geometry>
         </collision>
-        <xacro:inertial mass="10" originrpy="0. -0.05 0.0" ixx="${(1/12) * 10 * (.16*.16+.1*.1)}" iyy="${(1/12) * 10 * (.41*.41+.1*.1)}" izz="${(1/12) * 10 * (.41*.41+.16*.16)}"/>       
+        <xacro:inertial mass="10" originrpy="0. -0.05 0.0" ixx="${(1/12) * 10 * (.16*.16+.1*.1)}" iyy="${(1/12) * 10 * (.41*.41+.1*.1)}" izz="${(1/12) * 10 * (.41*.41+.16*.16)}" />
     </link>
     <xacro:wheel_link prefix="left" />
     <xacro:wheel_link prefix="right" reflect="-1" />
@@ -70,19 +97,19 @@
             </geometry>
             <material name="red" />
         </xacro:collision_visual>
-        <xacro:inertial mass="0.1" ixx="${(2/5) * 0.1*0.06*0.06}" iyy="${(2/5)*0.1*0.06*0.06}" izz="${(2/5)*0.1*0.06*0.06}"/>
+        <xacro:inertial mass="0.1" ixx="${(2/5) * 0.1*0.06*0.06}" iyy="${(2/5)*0.1*0.06*0.06}" izz="${(2/5)*0.1*0.06*0.06}" />
     </link>
     <xacro:gazebo_material color="Gazebo/Blue" reference="caster_wheel_link" />
-    <xacro:joint name="base_joint" originxyz="0 0 .1" child="root_link" parent="base_link" type="fixed"/>
+    <xacro:joint name="base_joint" originxyz="0 0 .1" child="root_link" parent="base_link" type="fixed" />
     <xacro:joint name="caster_wheel_joint" type="fixed" parent="root_link" child="caster_wheel_link" originxyz="${0.2-0.03} 0.0 -0.03" />
     <link name="imu_link">
         <xacro:collision_visual>
             <geometry>
-                <box size="0.03 0.03 0.03" />  
-                <origin xyz="0 0 ${sin(0.15)*.4}"/>  
-            </geometry> 
-            <material name="green"/>
+                <box size="0.03 0.03 0.03" />
+                <origin xyz="0 0 ${sin(0.15)*.4}" />
+            </geometry>
+            <material name="green" />
         </xacro:collision_visual>
     </link>
-    <xacro:joint name="imu_joint" type="fixed" parent="root_link" child="imu_link"  originxyz=".205 0 .055" />
+    <xacro:joint name="imu_joint" type="fixed" parent="root_link" child="imu_link" originxyz=".205 0 .055" />
 </robot>
