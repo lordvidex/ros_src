@@ -164,6 +164,7 @@ ${catkin_LIBRARIES}
 ## in contrast to setup.py, you can choose the destination
 catkin_install_python(PROGRAMS
   scripts/walker_node.py
+  scripts/walker.py
   DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
 

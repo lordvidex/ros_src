@@ -3,6 +3,10 @@ import rospy
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import LaserScan
 
+class Direction:
+    def __init__(self, center, width):
+        self.center = center
+        self.width = width
 
 class Walker:
     ROTATE_SPEED = 45 * math.pi / 180

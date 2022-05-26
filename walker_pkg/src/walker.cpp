@@ -13,10 +13,22 @@ Walker::Walker()
     pub = nh.advertise<geometry_msgs::Twist>("cmd_vel", 10);
     // subscribe to laser scans
     scanSub = nh.subscribe("scan", 10, &Walker::scanCallback, this);
+    for (int i = 0; i < 12; i++)
+    {
+        Direction direction(i*30);
+        directions.push_back(direction);
+        ROS_INFO("Direction's center: %f left: %f, right: %f", direction.center, direction.left, direction.right);
+    }
+    currentDirection = directions[6];
+    
 }
 
 void Walker::scanCallback(const sensor_msgs::LaserScanConstPtr &scan)
 {
+    if(isTurning) {
+        ROS_INFO("Scan callback returning");
+        return ;
+    }
     bool isObstacleInFront = false;
 
     // Find the closest range between the defined minimum and maximum angles
@@ -36,19 +48,30 @@ void Walker::scanCallback(const sensor_msgs::LaserScanConstPtr &scan)
     {
         if (!isTurning)
         {
-            // choose to turn left or right
-            Direction right(180 - SCAN_RANGE, SCAN_RANGE / 2);
-            Direction left(180 + SCAN_RANGE, SCAN_RANGE / 2);
-
-            // turn left if the average range is greater in left
-            turnMultiplier = left.averageRangeInDirection(scan) > right.averageRangeInDirection(scan) ? 1 : -1;
+            // create directions
+            Direction* maxDirection;
+            int maxInfs;
+            int maxAverage;
+            for (int i = 0; i < directions.size(); i++)
+            {
+                if(!directions[i].hasObstacleInFront(scan)) {
+                    ROS_INFO("Direction %d - no obstacle", i);
+                    int infs = directions[i].numberOfInfs(scan);
+                    int average = directions[i].averageRangeInDirection(scan);
+                    if (infs > maxInfs) {
+                        maxDirection = &directions[i];
+                        maxInfs = infs;
+                        maxAverage = average;
+                    } else if (infs == maxInfs) {
+                        maxAverage = average;
+                        maxDirection = &directions[i];
+                    }
+                }
+            }
             isTurning = true;
+            rotateTo(*maxDirection);
             // The default constructor will set all commands to 0
         }
-        ROS_INFO("Turn %s!", turnMultiplier == 1 ? "Left" : "Right");
-        msg.angular.z = ROTATE_SPEED * turnMultiplier;
-        msg.linear.x = 0;
-        pub.publish(msg);
     }
     else
     {
@@ -75,16 +98,16 @@ void Walker::rotateTo(Direction &direction)
 {
     ROS_INFO("started turning");
     geometry_msgs::Twist twist;
-    twist.angular.z = ROTATE_SPEED;
     bool endCondition = false;
-    double finishAngle = startAngle + (direction.center - currentDirection.center);
-    if (finishAngle < 0)
+    ROS_INFO("Best dir=%f, Current dir=%f", direction.center, currentDirection.center);
+    double turnAngle = direction.center - currentDirection.center;
+    ros::Time startTime = ros::Time::now();
+    ros::Time endTime = startTime + ros::Duration(abs(turnAngle) / ROTATE_SPEED);
+    ROS_INFO("Start time is %f and end time is %f", startTime , endTime);
+    ROS_INFO("Turning");
+    while (ros::Time::now() < endTime)
     {
-        finishAngle = finishAngle + 2 * M_PI;
-    }
-    while (!Direction::near(finishAngle, currentAngle))
-    {
-        ROS_INFO("Turning");
+        twist.angular.z = turnAngle > 0 ? 1 : -1 * ROTATE_SPEED;
         pub.publish(twist);
         ros::spinOnce();
     }
@@ -94,13 +117,15 @@ void Walker::rotateTo(Direction &direction)
 
     isTurning = false;
     isMoving = true; // start moving
-    startAngle = -1;
-    currentAngle = -1;
-    currentDirection = directions[4];
+    currentDirection = directions[6];
 }
 
 void Walker::odomCallback(const nav_msgs::OdometryConstPtr &msg)
 {
+    if (isTurning) {
+        ROS_INFO("Odom callback returning");
+        return ;
+    }
     tf::Quaternion q(
         msg->pose.pose.orientation.x,
         msg->pose.pose.orientation.y,
@@ -115,19 +140,7 @@ void Walker::odomCallback(const nav_msgs::OdometryConstPtr &msg)
         yaw = yaw + 2 * M_PI;
     }
     ROS_INFO("Angle is %f", yaw);
-    if (!isMoving)
-    {
-        if (startAngle == -1)
-        {
-            startAngle = yaw;
-            ROS_INFO("setting startAngle to %f", yaw);
-        }
-        else
-        {
-            currentAngle = yaw;
-            ROS_INFO("currentAngle is %f but startAngle is %f", currentAngle, startAngle);
-        }
-    }
+    currentAngle = yaw;
 }
 
 void Walker::startMoving()
@@ -163,10 +176,26 @@ double Direction::averageRangeInDirection(const sensor_msgs::LaserScanConstPtr &
 
     for (int currIndex = minIndex + 1; currIndex <= maxIndex; currIndex++)
     {
-        if (!std::isnan(msg->ranges[currIndex]))
-        {
+        if (std::isnan(msg->ranges[currIndex])) {
+            sum+=msg->range_max;
+        }
+        else {
             sum += msg->ranges[currIndex];
         }
     }
     return sum / (maxIndex - minIndex);
+}
+
+int Direction::numberOfInfs(const sensor_msgs::LaserScanConstPtr& msg) {
+    int sum = 0;
+    int minIndex = ceil((left - msg->angle_min) / msg->angle_increment);
+    int maxIndex = floor((right - msg->angle_min) / msg->angle_increment);
+
+    for (int currIndex = minIndex + 1; currIndex <= maxIndex; currIndex++)
+    {
+        if (std::isnan(msg->ranges[currIndex])) {
+            sum++;
+        }
+    }
+    return sum;
 }
