@@ -1,0 +1,548 @@
+<sdf version='1.7'>
+  <model name='physics'>
+    <link name='dummy'>
+      <inertial>
+        <pose>0 0 -0.04 0 -0 0</pose>
+        <mass>50</mass>
+        <inertia>
+          <ixx>10.556</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>8.62</iyy>
+          <iyz>0</iyz>
+          <izz>6.936</izz>
+        </inertia>
+      </inertial>
+      <collision name='dummy_fixed_joint_lump__base_link_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.6</length>
+            <radius>0.2</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <collision name='dummy_fixed_joint_lump__left_leg_collision_1'>
+        <pose>0 0.22 -0.05 0 1.5708 0</pose>
+        <geometry>
+          <box>
+            <size>0.6 0.1 0.2</size>
+          </box>
+        </geometry>
+      </collision>
+      <collision name='dummy_fixed_joint_lump__left_base_collision_2'>
+        <pose>0 0.22 -0.35 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.4 0.1 0.1</size>
+          </box>
+        </geometry>
+      </collision>
+      <collision name='dummy_fixed_joint_lump__right_leg_collision_3'>
+        <pose>0 -0.22 -0.05 0 1.5708 0</pose>
+        <geometry>
+          <box>
+            <size>0.6 0.1 0.2</size>
+          </box>
+        </geometry>
+      </collision>
+      <collision name='dummy_fixed_joint_lump__right_base_collision_4'>
+        <pose>0 -0.22 -0.35 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.4 0.1 0.1</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name='dummy_fixed_joint_lump__base_link_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.6</length>
+            <radius>0.2</radius>
+          </cylinder>
+        </geometry>
+      </visual>
+      <visual name='dummy_fixed_joint_lump__left_leg_visual_1'>
+        <pose>0 0.22 -0.05 0 1.5708 0</pose>
+        <geometry>
+          <box>
+            <size>0.6 0.1 0.2</size>
+          </box>
+        </geometry>
+      </visual>
+      <visual name='dummy_fixed_joint_lump__left_base_visual_2'>
+        <pose>0 0.22 -0.35 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.4 0.1 0.1</size>
+          </box>
+        </geometry>
+      </visual>
+      <visual name='dummy_fixed_joint_lump__right_leg_visual_3'>
+        <pose>0 -0.22 -0.05 0 1.5708 0</pose>
+        <geometry>
+          <box>
+            <size>0.6 0.1 0.2</size>
+          </box>
+        </geometry>
+      </visual>
+      <visual name='dummy_fixed_joint_lump__right_base_visual_4'>
+        <pose>0 -0.22 -0.35 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.4 0.1 0.1</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='left_back_wheel_joint' type='revolute'>
+      <pose relative_to='dummy'>-0.133333 0.22 -0.435 0 -0 0</pose>
+      <parent>dummy</parent>
+      <child>left_back_wheel</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='left_back_wheel'>
+      <pose relative_to='left_back_wheel_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass>1</mass>
+        <inertia>
+          <ixx>1</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1</iyy>
+          <iyz>0</iyz>
+          <izz>1</izz>
+        </inertia>
+      </inertial>
+      <collision name='left_back_wheel_collision'>
+        <pose>0 0 0 1.57075 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.1</length>
+            <radius>0.035</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='left_back_wheel_visual'>
+        <pose>0 0 0 1.57075 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.1</length>
+            <radius>0.035</radius>
+          </cylinder>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='left_front_wheel_joint' type='revolute'>
+      <pose relative_to='dummy'>0.133333 0.22 -0.435 0 -0 0</pose>
+      <parent>dummy</parent>
+      <child>left_front_wheel</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='left_front_wheel'>
+      <pose relative_to='left_front_wheel_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass>1</mass>
+        <inertia>
+          <ixx>1</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1</iyy>
+          <iyz>0</iyz>
+          <izz>1</izz>
+        </inertia>
+      </inertial>
+      <collision name='left_front_wheel_collision'>
+        <pose>0 0 0 1.57075 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.1</length>
+            <radius>0.035</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='left_front_wheel_visual'>
+        <pose>0 0 0 1.57075 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.1</length>
+            <radius>0.035</radius>
+          </cylinder>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='right_back_wheel_joint' type='revolute'>
+      <pose relative_to='dummy'>-0.133333 -0.22 -0.435 0 -0 0</pose>
+      <parent>dummy</parent>
+      <child>right_back_wheel</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='right_back_wheel'>
+      <pose relative_to='right_back_wheel_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass>1</mass>
+        <inertia>
+          <ixx>1</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1</iyy>
+          <iyz>0</iyz>
+          <izz>1</izz>
+        </inertia>
+      </inertial>
+      <collision name='right_back_wheel_collision'>
+        <pose>0 0 0 1.57075 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.1</length>
+            <radius>0.035</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='right_back_wheel_visual'>
+        <pose>0 0 0 1.57075 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.1</length>
+            <radius>0.035</radius>
+          </cylinder>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='right_front_wheel_joint' type='revolute'>
+      <pose relative_to='dummy'>0.133333 -0.22 -0.435 0 -0 0</pose>
+      <parent>dummy</parent>
+      <child>right_front_wheel</child>
+      <axis>
+        <xyz>0 1 0</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='right_front_wheel'>
+      <pose relative_to='right_front_wheel_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass>1</mass>
+        <inertia>
+          <ixx>1</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1</iyy>
+          <iyz>0</iyz>
+          <izz>1</izz>
+        </inertia>
+      </inertial>
+      <collision name='right_front_wheel_collision'>
+        <pose>0 0 0 1.57075 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.1</length>
+            <radius>0.035</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='right_front_wheel_visual'>
+        <pose>0 0 0 1.57075 -0 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.1</length>
+            <radius>0.035</radius>
+          </cylinder>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='gripper_extension' type='prismatic'>
+      <pose relative_to='dummy'>0.19 0 0.2 0 -0 0</pose>
+      <parent>dummy</parent>
+      <child>gripper_pole</child>
+      <axis>
+        <xyz>1 0 0</xyz>
+        <limit>
+          <lower>-0.38</lower>
+          <upper>0</upper>
+          <effort>1000</effort>
+          <velocity>0.5</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='gripper_pole'>
+      <pose relative_to='gripper_extension'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass>0.05</mass>
+        <inertia>
+          <ixx>1</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>1</iyy>
+          <iyz>0</iyz>
+          <izz>1</izz>
+        </inertia>
+      </inertial>
+      <collision name='gripper_pole_collision'>
+        <pose>0.1 0 0 0 1.5708 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.2</length>
+            <radius>0.01</radius>
+          </cylinder>
+        </geometry>
+      </collision>
+      <visual name='gripper_pole_visual'>
+        <pose>0.1 0 0 0 1.5708 0</pose>
+        <geometry>
+          <cylinder>
+            <length>0.2</length>
+            <radius>0.01</radius>
+          </cylinder>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='left_gripper_joint' type='revolute'>
+      <pose relative_to='gripper_pole'>0.2 0.01 0 0 -0 0</pose>
+      <parent>gripper_pole</parent>
+      <child>left_gripper</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>0.548</upper>
+          <effort>1000</effort>
+          <velocity>0.5</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='left_gripper'>
+      <pose relative_to='left_gripper_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>2</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2</iyy>
+          <iyz>0</iyz>
+          <izz>2</izz>
+        </inertia>
+      </inertial>
+      <collision name='left_gripper_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://my_urdf/meshes/l_finger.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <collision name='left_gripper_fixed_joint_lump__left_tip_collision_1'>
+        <pose>0.09137 0.00495 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://my_urdf/meshes/l_finger_tip.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='left_gripper_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://my_urdf/meshes/l_finger.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <visual name='left_gripper_fixed_joint_lump__left_tip_visual_1'>
+        <pose>0.09137 0.00495 0 0 -0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://my_urdf/meshes/l_finger_tip.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='right_gripper_joint' type='revolute'>
+      <pose relative_to='gripper_pole'>0.2 -0.01 0 0 -0 0</pose>
+      <parent>gripper_pole</parent>
+      <child>right_gripper</child>
+      <axis>
+        <xyz>0 0 -1</xyz>
+        <limit>
+          <lower>0</lower>
+          <upper>0.548</upper>
+          <effort>1000</effort>
+          <velocity>0.5</velocity>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='right_gripper'>
+      <pose relative_to='right_gripper_joint'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass>0.1</mass>
+        <inertia>
+          <ixx>2</ixx>
+          <ixy>0</ixy>
+          <ixz>0</ixz>
+          <iyy>2</iyy>
+          <iyz>0</iyz>
+          <izz>2</izz>
+        </inertia>
+      </inertial>
+      <collision name='right_gripper_collision'>
+        <pose>0 0 0 -3.1415 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://my_urdf/meshes/l_finger.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <collision name='right_gripper_fixed_joint_lump__right_tip_collision_1'>
+        <pose>0.09137 0.00495 0 -3.1415 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://my_urdf/meshes/l_finger_tip.dae</uri>
+          </mesh>
+        </geometry>
+      </collision>
+      <visual name='right_gripper_visual'>
+        <pose>0 0 0 -3.1415 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://my_urdf/meshes/l_finger.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+      <visual name='right_gripper_fixed_joint_lump__right_tip_visual_1'>
+        <pose>0.09137 0.00495 0 -3.1415 0 0</pose>
+        <geometry>
+          <mesh>
+            <scale>1 1 1</scale>
+            <uri>model://my_urdf/meshes/l_finger_tip.dae</uri>
+          </mesh>
+        </geometry>
+      </visual>
+    </link>
+    <joint name='head_swivel' type='revolute'>
+      <pose relative_to='dummy'>0 0 0.3 0 -0 0</pose>
+      <parent>dummy</parent>
+      <child>head</child>
+      <axis>
+        <xyz>0 0 1</xyz>
+        <limit>
+          <lower>-1e+16</lower>
+          <upper>1e+16</upper>
+        </limit>
+        <dynamics>
+          <spring_reference>0</spring_reference>
+          <spring_stiffness>0</spring_stiffness>
+        </dynamics>
+      </axis>
+    </joint>
+    <link name='head'>
+      <pose relative_to='head_swivel'>0 0 0 0 -0 0</pose>
+      <inertial>
+        <pose>0.060467 0 0.047133 0 -0 0</pose>
+        <mass>3</mass>
+        <inertia>
+          <ixx>2.01333</ixx>
+          <ixy>0</ixy>
+          <ixz>-0.0171</ixz>
+          <iyy>2.03527</iyy>
+          <iyz>0</iyz>
+          <izz>2.02194</izz>
+        </inertia>
+      </inertial>
+      <collision name='head_collision'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <sphere>
+            <radius>0.2</radius>
+          </sphere>
+        </geometry>
+      </collision>
+      <collision name='head_fixed_joint_lump__box_collision_1'>
+        <pose>0.1814 0 0.1414 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.08 0.08 0.08</size>
+          </box>
+        </geometry>
+      </collision>
+      <visual name='head_visual'>
+        <pose>0 0 0 0 -0 0</pose>
+        <geometry>
+          <sphere>
+            <radius>0.2</radius>
+          </sphere>
+        </geometry>
+      </visual>
+      <visual name='head_fixed_joint_lump__box_visual_1'>
+        <pose>0.1414 0 0.1414 0 -0 0</pose>
+        <geometry>
+          <box>
+            <size>0.08 0.08 0.08</size>
+          </box>
+        </geometry>
+      </visual>
+    </link>
+  </model>
+</sdf>
