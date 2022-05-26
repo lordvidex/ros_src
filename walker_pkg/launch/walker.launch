@@ -2,9 +2,8 @@
 <launch>
     <param name="/use_sim_time" value="true" />
     <arg name="model" default="burger"/>
-        
     <include file="$(find turtlebot3_gazebo)/launch/turtlebot3_house.launch" />
-    <!-- <node name="walker_node" pkg="walker_pkg" type="walker_node.py" output="screen"/> -->
-    <node name="walker_node" pkg="walker_pkg" type="walker_node" output="screen"/>
+    <node name="walker_node" pkg="walker_pkg" type="walker_node.py" output="screen"/>
+    <!-- <node name="walker_node" pkg="walker_pkg" type="walker_node" output="screen"/> -->
 
 </launch>

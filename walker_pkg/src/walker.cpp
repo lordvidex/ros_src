@@ -62,7 +62,7 @@ void Walker::scanCallback(const sensor_msgs::LaserScanConstPtr &scan)
                         maxDirection = &directions[i];
                         maxInfs = infs;
                         maxAverage = average;
-                    } else if (infs == maxInfs) {
+                    } else if (infs == maxInfs && average > maxAverage) {
                         maxAverage = average;
                         maxDirection = &directions[i];
                     }
@@ -76,10 +76,7 @@ void Walker::scanCallback(const sensor_msgs::LaserScanConstPtr &scan)
     else
     {
         isTurning = false;
-        ROS_INFO("Keep moving");
-        msg.linear.x = -1 * FORWARD_SPEED;
-        msg.angular.z = 0;
-        pub.publish(msg);
+        move();
     }
 }
 void Walker::move(double x)
